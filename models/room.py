@@ -1,17 +1,18 @@
-class Amity(object):
-    def __init__(self, name, capacity=0, status="open"):
+#! usr/bin/env
+class Room(object):
+    def __init__(self, name, capacity=0, access_allowed=[]):
+        self.name = name
         self.capacity = capacity
-
-class Room(Amity):
-    def __init__(self):
-        super(Amity, self).__init__(name)
+        self.access_allowed = access_allowed
 
 class Office(Room):
-    def __init__(self, capacity=6):
+    def __init__(self, name):
         super(Office, self).__init__(name)
-        self.capacity = capacity
+        self.capacity = 6
+        self.access_allowed = ["fellow", "staff"]
 
- class LivingSpace(Room):
-     def __init__(self, capacity=4):
-         super(LivingSpace, self).__init(name)
-         self.capacity = capacity
+class LivingSpace(Room):
+    def __init__(self, name):
+        super(LivingSpace, self).__init__(name)
+        self.capacity = 4
+        self.access_allowed = ["fellow"]
