@@ -1,19 +1,21 @@
+#! usr/bin/env
 """
     This File contains the class definitions handling the
     Staff and Fellows along with their attributes
 """
 class Person(object):
-    def __init__(self, name, location="unallocated", access="none"):
-        self.name = name
-        self.location = location
-        self.access = access
+    def __init__(self, fname, sname, role="none"):
+        self.fname = fname
+        self.sname = sname
+        self.role = role
 
 class Fellow(Person):
-    def __init__(self, name):
-        super(Fellow, self).__init__(name)
-        self.access = "fellow"
+    def __init__(self, wants_living="N"):
+        super(Fellow, self).__init__(fname, sname)
+        self.role = "fellow"
+
 
 class Staff(Person):
-    def __init__(self, name):
-        super(Staff, self).__init__(name)
-        self.access = "staff"
+    def __init__(self, fname, sname):
+        super(Staff, self).__init__(fname, sname)
+        self.role = "staff"
