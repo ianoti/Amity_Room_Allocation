@@ -1,16 +1,19 @@
 #! usr/bin/env
 import unittest
-import sys.path
-from person import Fellow, Staff
+import sys
 
-class TestClassExistance(unittest.TestCase):
+sys.path.append("../models")
 
-    def test_fellow_attribute(self):
-        john = Fellow("John Doe")
-        jane = Staff("Jane Doe")
+from models.person import Fellow, Staff
+
+class TestAttributeSetting(unittest.TestCase):
+
+    def test_person_attribute(self):
+        john = Fellow("John", "Doe", "Fellow", "Y")
+        njush = Fellow("Myman", "hallo", "Fellow")
+        jane = Staff("Jane", "Wewe")
         self.assertIsInstance(john, Fellow, msg="Failed to create a new Fellow")
         self.assertIsInstance(jane, Staff, msg="Failed to create a new Staff")
-        self.assertListEqual(["fellow", "staff"], [john.access, jane.access],
-            msg="wrong access level")
-        self.assertListEqual(["unallocated", "unallocated"], [john.location, jane.location],
-            msg="the person has been erroniously allocated")
+        self.assertListEqual(["fellow", "staff"], [john.role, jane.role],
+            msg="incorrect attribute settings")
+        self.assertEqual(njush.wants_living, "N", msg = "error inheriting")
