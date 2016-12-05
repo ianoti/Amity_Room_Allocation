@@ -1,8 +1,5 @@
 #! usr/bin/env
 import unittest
-import sys
-
-sys.path.append("../")
 
 from app import Amity
 

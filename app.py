@@ -4,14 +4,15 @@
     room allocation system
 """
 
-import sys
-
-sys.path.append("./models")
-
-from person import Fellow, Staff
-from room import Office, LivingSpace
+from models.person import Fellow, Staff
+from models.room import Office, LivingSpace
 
 
 class Amity(object):
     def __init__(self):
+        self.person_list = []
+        self.room_directory = {}
+
+        pass
+    def add_person():
         pass

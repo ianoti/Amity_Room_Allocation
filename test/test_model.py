@@ -1,11 +1,8 @@
 #! usr/bin/env
 import unittest
-import sys
 
-sys.path.append("../models")
-
-from person import Fellow, Staff
-from room import Office, LivingSpace
+from models.person import Fellow, Staff
+from models.room import Office, LivingSpace
 
 class TestPersonAttribute(unittest.TestCase):
 
