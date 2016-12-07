@@ -98,3 +98,11 @@ class TestErroneousInput(unittest.TestCase):
             "can't add a person without details", "Staff aren't eligible for accomodation",
             "the role must be given"])
         self.assertEqual(1, len(self.amity.person_list), msg="only add valid people")
+
+class TestRoomAllocate(unittest.TestCase):
+    """ check that room allocation is functioning """
+    def setUp(self):
+        self.amity = Amity()
+        self.amity.add_room("o", "Valhalla", "Krypton", "Zone", "Farm", "Jericho")
+        self.amity.add_room("l", "Tweepy", "Valkyrie", "Levite", "Ruby", "Bronze")
+        self.amity.batch_add_person("./test_data.txt")
