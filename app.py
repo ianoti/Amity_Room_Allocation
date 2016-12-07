@@ -1,4 +1,4 @@
-#! #! usr/bin/env
+#! usr/bin/env
 import os
 """
     This module implements Amity as a class based interface for the entire
@@ -20,7 +20,7 @@ class Amity(object):
 
     """ method to add rooms to system utilising models specified"""
     @staticmethod
-    def add_room(rm_name, rm_type):
+    def add_room(rm_type, rm_name):
         rm_variable = rm_name.lower()
         if rm_type == "o":
             rm_variable = Office(rm_name)
@@ -33,14 +33,10 @@ class Amity(object):
 
     """  method to load names from txt file """
     @staticmethod
-    def load_persons():
+    def batch_add_person(file_path):
         """ load some text from file and pass as argument to create person """
         pass
 
-    """ method to create rooms and append to a list """
-    @staticmethod
-    def add_person(fname, sname, role="none", wants_living="N"):
-        pass
 
     """ method to save state to database """
     @staticmethod
