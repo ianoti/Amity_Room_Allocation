@@ -1,4 +1,5 @@
 #! #! usr/bin/env
+import os
 """
     This module implements Amity as a class based interface for the entire
     room allocation system
@@ -39,4 +40,14 @@ class Amity(object):
     """ method to create rooms and append to a list """
     @staticmethod
     def add_person(fname, sname, role="none", wants_living="N"):
+        pass
+
+    """ method to save state to database """
+    @staticmethod
+    def save_system_state():
+        pass
+
+    """ method to load state from database """
+    @staticmethod
+    def load_system_state():
         pass
