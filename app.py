@@ -7,31 +7,36 @@
 from models.person import Fellow, Staff
 from models.room import Office, LivingSpace
 
-
 class Amity(object):
     def __init__(self):
         self.person_list = []
         self.room_directory = []
-    """
-        This method will use the Fellow and Staff models to create instances of
-        fellow and staff and append it to a list of people
-    """
+
+    """ method to add people to system utilising models"""
     @staticmethod
     def add_person(fname, sname, role, wants_living = "N"):
-        # if role == "fellow":
-        #     fellow = Fellow(self, fname, sname, role, wants_living = "N")
-        #     self.person_list.append(fellow)
-        #     for person in self.person_list:
-        #         print (person.fna)
-    """
-        This method will use the Room and LivingSpace models to create instances of
-        LivingSpace and Office and append it to a list of rooms
-    """
+        pass
+
+    """ method to add rooms to system utilising models specified"""
     @staticmethod
-    def add_room(name, type):
-        if type == "o":
+    def add_room(rm_name, rm_type):
+        rm_variable = rm_name.lower()
+        if rm_type == "o":
+            rm_variable = Office(rm_name)
             pass #after creation using Office class append to room_directory
-        elif type == "l":
+        elif rm_type == "l":
+            rm_variable = LivingSpace(rm_name)
             pass #after creation using LivingSpace class append to room_directory
         else:
             print ("the option given to create room is invalid")
+
+    """  method to load names from txt file """
+    @staticmethod
+    def load_persons():
+        """ load some text from file and pass as argument to create person """
+        pass
+
+    """ method to create rooms and append to a list """
+    @staticmethod
+    def add_person(fname, sname, role="none", wants_living="N"):
+        pass
