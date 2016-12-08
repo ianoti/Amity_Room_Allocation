@@ -26,13 +26,13 @@ class TestIndividualCreation(unittest.TestCase):
     """ check that Amity can add people individually """
     def test_add_people(self):
         self.amity.add_person("Judy", "Okatch", "staff")
-        self.assertNotEqual(0, len(self.amity.person_list), msg="person didn't add")
+        self.assertNotEqual(0, len(self.amity.waiting_list), msg="person didn't add")
         self.amity.add_person("Tom", "Bosire", "fellow")
         self.amity.add_person("Alois", "Bumbum", "fellow", "Y")
-        self.assertEqual(3, len(self.amity.person_list), msg="adding people has failed")
-        self.assertIsInstance(self.amity.person_list[0], Staff, msg="incorrect inheritance")
-        self.assertIsInstance(self.amity.person_list[2], Fellow, msg="incorrect inheritance")
-        self.assertEqual(self.amity.person_list[1].wants_living, "N", msg="default choice not loading")
+        self.assertEqual(3, len(self.amity.waiting_list), msg="adding people has failed")
+        self.assertIsInstance(self.amity.waiting_list[0], Staff, msg="incorrect inheritance")
+        self.assertIsInstance(self.amity.waiting_list[2], Fellow, msg="incorrect inheritance")
+        self.assertEqual(self.amity.waiting_list[1].wants_living, "N", msg="default choice not loading")
 
 class TestBatchAddition(unittest.TestCase):
     def setUp(self):
@@ -41,16 +41,16 @@ class TestBatchAddition(unittest.TestCase):
     """ check that Amity can add people from .txt file """
     def test_add_batch_people(self):
         self.amity.batch_add_person("./test_data.txt")
-        self.assertNotEqual(0, len(self.amity.person_list), msg="didn't load people from list")
-        self.assertEqual(12,len(self.amity.person_list,
+        self.assertNotEqual(0, len(self.amity.waiting_list), msg="didn't load people from list")
+        self.assertEqual(12,len(self.amity.waiting_list,
             msg="error loading people from test_data.txt file of 12 names"))
-        self.assertListEqual([self.amity.person_list[0].fname,
-            self.amity.person_list[1].fname, self.amity.person_list[2].fname,
-            self.amity.person_list[3].fname],
+        self.assertListEqual([self.amity.waiting_list[0].fname,
+            self.amity.waiting_list[1].fname, self.amity.waiting_list[2].fname,
+            self.amity.waiting_list[3].fname],
             ["OLUWAFEMI", "DOMINIC", "SIMON", "MARI"], msg="incorrect loading order or parsing")
-        self.assertIsInstance(self.amity.person_list[7], Staff, msg="incorrect inheritance")
-        self.assertListEqual([self.amity.person_list[4].wants_living,
-            self.amity.person_list[5].wants_living, self.amity.person_list[6].wants_living],
+        self.assertIsInstance(self.amity.waiting_list[7], Staff, msg="incorrect inheritance")
+        self.assertListEqual([self.amity.waiting_list[4].wants_living,
+            self.amity.waiting_list[5].wants_living, self.amity.waiting_list[6].wants_living],
             ["Y", "N", "Y"], msg="default values for accomodation choice incorrect")
 
     """ check that Amity allows for addition of multiple rooms """
@@ -96,7 +96,7 @@ class TestErroneousInput(unittest.TestCase):
             "Staff aren't eligible for accomodation", "the person's role is missing"],
             msg="the add person function should catch erroneous inputs")
 
-        self.assertEqual(1, len(self.amity.person_list), msg="only add valid people")
+        self.assertEqual(1, len(self.amity.waiting_list), msg="only add valid people")
 
 class TestRoomAllocate(unittest.TestCase):
     """ check that room allocation is functioning """

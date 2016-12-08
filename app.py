@@ -10,7 +10,7 @@ from models.room import Office, LivingSpace
 
 class Amity(object):
     def __init__(self):
-        self.person_list = []
+        self.waiting_list = []
         self.room_directory = []
 
     """ method to add people to system utilising models"""
