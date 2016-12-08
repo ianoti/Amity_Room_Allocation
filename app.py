@@ -15,21 +15,26 @@ class Amity(object):
 
     """ method to add people to system utilising models"""
     @staticmethod
-    def add_person(fname, sname, role, wants_living = "N"):
+    def add_person(fname, sname, role="none", wants_living = "N"):
         pass
 
-    """ method to add rooms to system utilising models specified"""
+    """ method to add rooms to system utilising models specified.
+        the add room method should be able to accept multiple
+        inputs
+    """
     @staticmethod
-    def add_room(rm_type, rm_name):
-        rm_variable = rm_name.lower()
-        if rm_type == "o":
-            rm_variable = Office(rm_name)
-            pass #after creation using Office class append to room_directory
-        elif rm_type == "l":
-            rm_variable = LivingSpace(rm_name)
-            pass #after creation using LivingSpace class append to room_directory
-        else:
-            print ("the option given to create room is invalid")
+    def add_room(rm_type, *args):
+        for rm_name in args:
+            if isinstance(rm_name, str):
+                rm_variable = rm_name.lower()
+                if rm_type == "o":
+                    rm_variable = Office(rm_name)
+                    pass #after creation using Office class append to room_directory
+                elif rm_type == "l":
+                    rm_variable = LivingSpace(rm_name)
+                    pass #after creation using LivingSpace class append to room_directory
+                else:
+                    print ("the option given to create room is invalid")
 
     """  method to load names from txt file """
     @staticmethod

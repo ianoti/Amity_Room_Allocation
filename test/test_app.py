@@ -42,7 +42,8 @@ class TestBatchAddition(unittest.TestCase):
     def test_add_batch_people(self):
         self.amity.batch_add_person("./test_data.txt")
         self.assertNotEqual(0, len(self.amity.person_list), msg="didn't load people from list")
-        self.assertEqual(7,len(self.amity.person_list, msg="error loading people from .txt"))
+        self.assertEqual(12,len(self.amity.person_list,
+            msg="error loading people from test_data.txt file of 12 names"))
         self.assertListEqual([self.amity.person_list[0].fname,
             self.amity.person_list[1].fname, self.amity.person_list[2].fname,
             self.amity.person_list[3].fname],
@@ -79,12 +80,9 @@ class TestErroneousInput(unittest.TestCase):
 
     """ check for wrong parameters passed to room creation """
     def test_room_add_wrong_options(self):
-        self.assertEqual(self.amity.add_room(), "please give room type and name",
-            msg="the add room method must take arguments")
-        self.assertEqual(self.amity.add_room(0, "whoop"), "please specify room type correctly",
-            msg="the add room method must take arguments")
-        self.assertEqual(self.amity.add_room("l", 23), "the room name is limited to string",
-            msg="only string allowed as room name")
+        self.assertListEqual([self.amity.add_room(0, "Jollyroger"),
+            self.amity.add_room("o", 45)], ["the room option is invalid",
+            "the room name is invalid"], msg="the arguments are invalid")
         self.assertEqual(1, len(self.amity.room_directory),
             msg="the room directory should only accept valid inputs")
 
@@ -92,11 +90,12 @@ class TestErroneousInput(unittest.TestCase):
     def test_add_person_wrong_options(self):
         self.assertListEqual([self.amity.add_person(0, "Walter", "Staff"),
             self.amity.add_person("John", "Doe", "x"), self.amity.add_person("John", 0, "fellow"),
-            self.amity.add_person(), self.amity.add_person("John", "Doe", "Staff", "Y"),
+            self.amity.add_person("John", "Doe", "Staff", "Y"),
             self.amity.add_person("John", "Doe")],
             ["the name is invalid", "the role is invalid", "the name is invalid",
-            "can't add a person without details", "Staff aren't eligible for accomodation",
-            "the role must be given"])
+            "Staff aren't eligible for accomodation", "the person's role is missing"],
+            msg="the add person function should catch erroneous inputs")
+
         self.assertEqual(1, len(self.amity.person_list), msg="only add valid people")
 
 class TestRoomAllocate(unittest.TestCase):
