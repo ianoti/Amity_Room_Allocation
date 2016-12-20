@@ -15,9 +15,21 @@ class Amity(object):
         self.waiting_list = []
 
     """ method to add people to system utilising models"""
-    @staticmethod
-    def add_person(fname, sname, role="none", wants_living = "N"):
-        pass
+    def add_person(self, fname, sname, role="none", wants_living = "N"):
+        if isinstance(fname, str) and isinstance(sname, str):
+            if role.lower() == "fellow":
+                person = Fellow(fname, sname, role, wants_living)
+            elif role.lower() == "staff":
+                if wants_living == "Y":
+                    return "Staff aren't eligible for accomodation"
+                else:
+                    person = Staff(fname, sname)
+            else:
+                return "the role is invalid"
+            self.waiting_list.append(person)
+        elif not isinstance(fname, str) or not isinstance(sname, str):
+            return "the name is invalid"
+
 
     """ method to add rooms to system utilising models specified.
         the add room method should be able to accept multiple
