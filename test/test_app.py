@@ -42,15 +42,15 @@ class TestBatchAddition(unittest.TestCase):
     def test_add_batch_people(self):
         self.amity.batch_add_person("./test_data.txt")
         self.assertNotEqual(0, len(self.amity.waiting_list), msg="didn't load people from list")
-        self.assertEqual(12,len(self.amity.waiting_list,
-            msg="error loading people from test_data.txt file of 12 names"))
+        self.assertEqual(12,len(self.amity.waiting_list),
+            msg="error loading people from test_data.txt file of 12 names")
         self.assertListEqual([self.amity.waiting_list[0].fname,
             self.amity.waiting_list[1].fname, self.amity.waiting_list[2].fname,
             self.amity.waiting_list[3].fname],
             ["OLUWAFEMI", "DOMINIC", "SIMON", "MARI"], msg="incorrect loading order or parsing")
-        self.assertIsInstance(self.amity.waiting_list[7], Staff, msg="incorrect inheritance")
-        self.assertListEqual([self.amity.waiting_list[4].wants_living,
-            self.amity.waiting_list[5].wants_living, self.amity.waiting_list[6].wants_living],
+        self.assertIsInstance(self.amity.waiting_list[7], Fellow, msg="incorrect inheritance")
+        self.assertListEqual([self.amity.waiting_list[5].wants_living,
+            self.amity.waiting_list[7].wants_living, self.amity.waiting_list[11].wants_living],
             ["Y", "N", "Y"], msg="default values for accomodation choice incorrect")
 
     """ check that Amity allows for addition of multiple rooms """
@@ -102,6 +102,12 @@ class TestRoomAllocate(unittest.TestCase):
     """ check that room allocation is functioning """
     def setUp(self):
         self.amity = Amity()
-        self.amity.add_room("o", "Valhalla", "Krypton", "Zone", "Farm", "Jericho")
-        self.amity.add_room("l", "Tweepy", "Valkyrie", "Levite", "Ruby", "Bronze")
-        self.amity.add_person("")
+        self.amity.add_room("o", "Valhalla")
+        self.amity.add_room("l", "Tweepy")
+        self.amity.add_person("Adrian", "Andre", "Fellow", "Y")
+
+    def test_simple_allocation(self):
+        self.amity.allocate()
+        self.assertEqual(len(self.waiting_list),0)
+        self.assertEqual(len(self.room_directory[0].occupants), 1)
+        self.assertEqual(len(self.room_directory[1].occupants), 1)

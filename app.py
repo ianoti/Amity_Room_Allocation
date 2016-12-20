@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import random
 """
     This module implements Amity as a class based interface for the entire
     room allocation system
@@ -14,8 +15,8 @@ class Amity(object):
         self.room_directory = []
         self.waiting_list = []
 
-    """ method to add people to system utilising models"""
     def add_person(self, fname, sname, role="none", wants_living = "N"):
+        """ method to add people to system utilising models"""
         if isinstance(fname, str) and isinstance(sname, str):
             if role.lower() == "fellow":
                 person = Fellow(fname, sname, role, wants_living)
@@ -31,12 +32,10 @@ class Amity(object):
             return "the name is invalid"
 
 
-    """ method to add rooms to system utilising models specified.
-        the add room method should be able to accept multiple
-        inputs
-    """
+
 
     def add_room(self, rm_type, *given_names):
+        """ method to add rooms to system utilising models specified """
         for rm_name in given_names:
             if isinstance(rm_type, str) and isinstance(rm_name, str):
                 rm_variable =  rm_name.lower()
@@ -55,27 +54,35 @@ class Amity(object):
             elif not isinstance(rm_name, str):
                 return "the room name is invalid"
 
-    """  method to load names from txt file """
+    def allocate(self):
+        """ method that will be called to allocate rooms to fellows and staff """
+        for person in self.waiting_list:
+            if person.role == "staff":
+                pass
 
-    @staticmethod
-    def batch_add_person(file_path):
-        """ load some text from file and pass as argument to create person """
+    def reallocate(self, fname, sname, new_rm):
+        """ method to allow for reallocation of users between rooms """
         pass
 
+    def batch_add_person(self, file_path):
+        """  method to load names from txt file and add people to system """
+        with open(file_path, "r") as people_file:
+            for person_string in people_file:
+                person_details = person_string.rstrip().split()
+                if len(person_details) == 4:
+                    self.add_person(person_details[0], person_details[1], person_details[2], person_details[3])
+                elif len(person_details) == 3:
+                    self.add_person(person_details[0], person_details[1], person_details[2])
+                else:
+                    return "the text file has formatting errors"
 
-    """ method to save state to database """
+
     @staticmethod
     def save_system_state():
+        """ method to save state to database """
         pass
 
-    """ method to load state from database """
     @staticmethod
     def load_system_state():
+        """ method to load state from database """
         pass
-
-    """ method that will be called to allocate rooms to fellows and staff """
-    @staticmethod
-    def allocate():
-        pass
-
-    """ method that will reallocate people based on the unique emp_id """
