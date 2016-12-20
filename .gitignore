@@ -23,6 +23,8 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+.DS_Store
+*/.DS_Store
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -87,3 +89,7 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Test data to be ignored
+miscellaneous_test.py
+/data/example.txt
