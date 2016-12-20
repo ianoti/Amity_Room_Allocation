@@ -31,9 +31,6 @@ class Amity(object):
         elif not isinstance(fname, str) or not isinstance(sname, str):
             return "the name is invalid"
 
-
-
-
     def add_room(self, rm_type, *given_names):
         """ method to add rooms to system utilising models specified """
         for rm_name in given_names:
@@ -54,11 +51,12 @@ class Amity(object):
             elif not isinstance(rm_name, str):
                 return "the room name is invalid"
 
+    def available_rooms(self):
+        for room in
+
     def allocate(self):
-        """ method that will be called to allocate rooms to fellows and staff """
         for person in self.waiting_list:
-            if person.role == "staff":
-                pass
+            
 
     def reallocate(self, fname, sname, new_rm):
         """ method to allow for reallocation of users between rooms """
@@ -76,6 +74,8 @@ class Amity(object):
                 else:
                     return "the text file has formatting errors"
 
+    def print_room_occupants(self, rm_name):
+        """ print the occupants in a room given the room name """
 
     @staticmethod
     def save_system_state():
@@ -86,3 +86,11 @@ class Amity(object):
     def load_system_state():
         """ method to load state from database """
         pass
+
+c = Amity()
+c.add_person("Judy", "Okatch", "staff")
+# c.add_room("o", "Hogwarts")
+print(c.room_directory)
+print(c.waiting_list)
+
+c.allocate()

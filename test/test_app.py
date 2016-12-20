@@ -105,9 +105,10 @@ class TestRoomAllocate(unittest.TestCase):
         self.amity.add_room("o", "Valhalla")
         self.amity.add_room("l", "Tweepy")
         self.amity.add_person("Adrian", "Andre", "Fellow", "Y")
+        self.amity.add_person("Tom", "Omondi", "STAFF")
 
     def test_simple_allocation(self):
         self.amity.allocate()
         self.assertEqual(len(self.waiting_list),0)
-        self.assertEqual(len(self.room_directory[0].occupants), 1)
+        self.assertEqual(len(self.room_directory[0].occupants), 2)
         self.assertEqual(len(self.room_directory[1].occupants), 1)
