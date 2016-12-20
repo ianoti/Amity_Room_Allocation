@@ -1,4 +1,4 @@
-#! usr/bin/env
+#!/usr/bin/env python
 import os
 """
     This module implements Amity as a class based interface for the entire
@@ -9,9 +9,10 @@ from models.person import Fellow, Staff
 from models.room import Office, LivingSpace
 
 class Amity(object):
+
     def __init__(self):
-        self.waiting_list = []
         self.room_directory = []
+        self.waiting_list = []
 
     """ method to add people to system utilising models"""
     @staticmethod
@@ -22,21 +23,28 @@ class Amity(object):
         the add room method should be able to accept multiple
         inputs
     """
-    @staticmethod
-    def add_room(rm_type, *args):
-        for rm_name in args:
-            if isinstance(rm_name, str):
-                rm_variable = rm_name.lower()
-                if rm_type == "o":
-                    rm_variable = Office(rm_name)
-                    pass #after creation using Office class append to room_directory
-                elif rm_type == "l":
-                    rm_variable = LivingSpace(rm_name)
-                    pass #after creation using LivingSpace class append to room_directory
+
+    def add_room(self, rm_type, *given_names):
+        for rm_name in given_names:
+            if isinstance(rm_type, str) and isinstance(rm_name, str):
+                rm_variable =  rm_name.lower()
+                if rm_variable not in [room.name for room in self.room_directory]:
+                    if rm_type == "l":
+                        room = LivingSpace(rm_variable)
+                    elif rm_type == "o" or "office":
+                        room = Office(rm_variable)
+                    else:
+                        print ("the option given to create room is invalid")
+                    self.room_directory.append(room)
                 else:
-                    print ("the option given to create room is invalid")
+                    return "the room already exists"
+            elif not isinstance(rm_type, str):
+                return "the room option is invalid"
+            elif not isinstance(rm_name, str):
+                return "the room name is invalid"
 
     """  method to load names from txt file """
+
     @staticmethod
     def batch_add_person(file_path):
         """ load some text from file and pass as argument to create person """
@@ -52,3 +60,10 @@ class Amity(object):
     @staticmethod
     def load_system_state():
         pass
+
+    """ method that will be called to allocate rooms to fellows and staff """
+    @staticmethod
+    def allocate():
+        pass
+
+    """ method that will reallocate people based on the unique emp_id """
