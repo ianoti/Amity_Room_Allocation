@@ -1,4 +1,4 @@
-#! usr/bin/env
+#!/usr/bin/env python
 import unittest
 
 from app import *
@@ -17,7 +17,7 @@ class TestIndividualCreation(unittest.TestCase):
         self.assertIsInstance(self.amity.room_directory[0], Office, msg="incorrect instantiation")
         self.assertIsInstance(self.amity.room_directory[1], LivingSpace, msg="incorrect instantiation")
         self.assertListEqual([self.amity.room_directory[0].name,
-            self.amity.room_directory[1].name], ["Hogwarts", "Narnia"],
+            self.amity.room_directory[1].name], ["hogwarts", "narnia"],
             msg="room objects not properly added to room_directory")
         self.amity.add_room("office", "bigthink")
         self.assertEqual(self.amity.room_directory[2].name, "bigthink",
@@ -93,7 +93,7 @@ class TestErroneousInput(unittest.TestCase):
             self.amity.add_person("John", "Doe", "Staff", "Y"),
             self.amity.add_person("John", "Doe")],
             ["the name is invalid", "the role is invalid", "the name is invalid",
-            "Staff aren't eligible for accomodation", "the person's role is missing"],
+            "Staff aren't eligible for accomodation", "the role is invalid"],
             msg="the add person function should catch erroneous inputs")
 
         self.assertEqual(1, len(self.amity.waiting_list), msg="only add valid people")
@@ -104,4 +104,4 @@ class TestRoomAllocate(unittest.TestCase):
         self.amity = Amity()
         self.amity.add_room("o", "Valhalla", "Krypton", "Zone", "Farm", "Jericho")
         self.amity.add_room("l", "Tweepy", "Valkyrie", "Levite", "Ruby", "Bronze")
-        self.amity.batch_add_person("./test_data.txt")
+        self.amity.add_person("")
