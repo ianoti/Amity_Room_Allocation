@@ -1,10 +1,10 @@
 #! usr/bin/env
 class Room(object):
-    def __init__(self, name, capacity=0, access_allowed=[], occupants=[]):
+    def __init__(self, name, capacity=0, access_allowed=[]):
         self.name = name
         self.capacity = capacity
         self.access_allowed = access_allowed
-        self.occupants = occupants
+        self.occupants = []
 
 class Office(Room):
     def __init__(self, name):

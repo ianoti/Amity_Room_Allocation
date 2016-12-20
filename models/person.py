@@ -4,10 +4,11 @@
     Staff and Fellows along with their attributes
 """
 class Person(object):
-    def __init__(self, fname, sname, role="none"):
+    def __init__(self, fname, sname, role="none", p_id = 0):
         self.fname = fname
         self.sname = sname
         self.role = role
+        self.p_id = p_id
 
 class Fellow(Person):
     def __init__(self, fname, sname, role, wants_living="N"):
