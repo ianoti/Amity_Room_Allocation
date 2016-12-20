@@ -27,3 +27,4 @@ class TestRoomAttribute(unittest.TestCase):
         self.assertListEqual([["fellow"],["fellow", "staff"]], [tweet.access_allowed, narnia.access_allowed]
             , msg = "incorrect access level")
         self.assertListEqual([4, 6], [tweet.capacity, narnia.capacity], msg ="error in capacity")
+        self.assertListEqual([0, 0], [len(narnia.occupants),len(tweet.occupants)], msg ="error in occupancy")
