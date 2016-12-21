@@ -36,7 +36,7 @@ class Amity(object):
         elif not isinstance(fname, str) or not isinstance(sname, str):
             return "the name is invalid"
 
-    def add_room(self, rm_type, *given_names):
+    def add_room(self, rm_type, given_names):
         """ method to add rooms to system utilising models specified """
         for rm_name in given_names:
             if isinstance(rm_type, str) and isinstance(rm_name, str):
@@ -145,6 +145,7 @@ class Amity(object):
 
     def print_unallocated(self, option = "no"):
         """display a list of unallocated people on screen optional writing to file"""
+        print("unallocated print is running")
         if option == "no":
             if len(self.waiting_list)>=1:
                 print("People who have yet to be allocated")
@@ -241,11 +242,3 @@ class Amity(object):
     def load_system_state():
         """ method to load state from database """
         pass
-
-
-c = Amity()
-c.batch_add_person("./test/test_data.txt")
-c.add_room("o", "Kulala", "chillarea", "pambazuko")
-c.add_room("l", "tweepy", "pick", "popo")
-c.allocate()
-c.print_allocations("-o")
