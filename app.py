@@ -123,7 +123,6 @@ class Amity(object):
         print(len(occupied_room))
         #person_id is used to retrieve person object used in comprehension
         person_retr = [person for person in self.people_directory if person.p_id == person_id]
-        print(len(person_retr))
         if len(person_retr):
             move_person = person_retr[0]
             #check if the person is in a room to remove from
@@ -159,20 +158,53 @@ class Amity(object):
             elif len(self.waiting_list)==0:
                 print("all people have been allocated")
 
+        elif option == "-o":
+            file = open("./data/unallocated_people.txt", "w")
+            if len(self.waiting_list)>=1:
+                file.write("People who have yet to be allocated\n")
+                file.write("#"*50+"\n")
+                for person in self.waiting_list:
+                    if isinstance(person, Fellow):
+                        file.write("Name: {} {} Role: {} Wants accomodation:{}\n"
+                            .format(person.fname, person.sname, person.role, person.wants_living))
+                    elif isinstance(person, Staff):
+                        file.write("Name: {} {} Role: {}\n".format(person.fname,person.sname, person.role))
+            else:
+                file.write("There are no unallocated people")
+            file.close()
+
     def print_allocations(self, option = "no"):
         """ print out people currently allocated to a room and the room name """
         rooms_w_guys = self.get_rooms_w_people()
-        if len(rooms_w_guys) == 0:
-            print("No people have been allocated yet")
-        elif len(rooms_w_guys) >= 1:
-            print("People allocated to room and room name\n")
-            for room in rooms_w_guys:
-                print("{}".format(room.name))
-                print("-" *50)
-                member_string = ""
-                for person in room.occupants:
-                    member_string += ("{} {} {} ,".format(person.fname, person.sname, person.role))
-                print (member_string)
+        if option == "no":
+            if len(rooms_w_guys) == 0:
+                print("No people have been allocated yet")
+            elif len(rooms_w_guys) >= 1:
+                print("People allocated to room and room name")
+                for room in rooms_w_guys:
+                    print("{}".format(room.name))
+                    print("-"*50)
+                    member_string = ""
+                    for person in room.occupants:
+                        member_string += ("{} {} {} ,".format(person.fname, person.sname, person.role))
+                    print (member_string)
+
+        elif option == "-o":
+            file = open("./data/allocated_people.txt", "w")
+            if len(rooms_w_guys) >=1:
+                file.write("People allocated to room and room name\n")
+                for room in rooms_w_guys:
+                    file.write("{}\n".format(room.name))
+                    file.write("-"*50+"\n")
+                    member_string = ""
+                    for person in room.occupants:
+                        member_string += ("{} {} {} ,".format(person.fname, person.sname, person.role))
+                    file.write(member_string+"\n")
+            else:
+                file.write("No people have been allocated yet")
+            file.close()
+
+
 
     def batch_add_person(self, file_path):
         """  method to load names from txt file and add people to system """
@@ -201,7 +233,6 @@ class Amity(object):
         else:
             print("the room doesn't exist")
 
-    @staticmethod
     def save_system_state():
         """ method to save state to database """
         pass
@@ -214,21 +245,7 @@ class Amity(object):
 
 c = Amity()
 c.batch_add_person("./test/test_data.txt")
-print(len(c.waiting_list))
-print(len(c.people_directory))
-for person in c.waiting_list:
-    print("{} {}".format(person.fname,person.p_id))
 c.add_room("o", "Kulala", "chillarea", "pambazuko")
 c.add_room("l", "tweepy", "pick", "popo")
-print(len(c.room_directory))
 c.allocate()
-
-print(len(c.waiting_list))
-c.print_allocations()
-c.add_room("o", "Oculus")
-c.get_person_id("JOHN","DOE")
-c.print_room("Oculus")
-c.reallocate(8,"Oculus")
-c.print_allocations()
-c.print_room("Oculus")
-print("end of test string")
+c.print_allocations("-o")
