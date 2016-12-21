@@ -10,6 +10,8 @@ Usage:
     Amity load_people <file_path>
     Amity get_id <first_name> <second_name>
     Amity reallocate_person <person_identifier> <new_room_name>
+    Amity save_state [--db=sqlite_database]
+    Amity load_state <sqlite_database>
     Amity (-i | --interactive)
     Amity (-h | --help | --version)
 Options:
@@ -84,6 +86,7 @@ class MyInteractive (cmd.Cmd):
             self.amity.add_person(fname,sname,role, wants_acc)
         else:
             self.amity.add_person(fname,sname,role)
+        self.amity.allocate()
 
     @docopt_cmd
     def do_print_unallocated(self, arg):
@@ -98,6 +101,7 @@ class MyInteractive (cmd.Cmd):
     def do_load_people(self, arg):
         """Usage: load_people <file_path>"""
         self.amity.batch_add_person(arg["<file_path>"])
+        self.amity.allocate()
 
     @docopt_cmd
     def do_print_allocated(self, arg):
@@ -124,6 +128,23 @@ class MyInteractive (cmd.Cmd):
         fname = arg["<first_name>"]
         sname = arg["<second_name>"]
         self.amity.get_person_id(fname, sname)
+
+    @docopt_cmd
+    def do_save_state(self, arg):
+        """Usage: save_state [--db=sqlite_database]"""
+        option = arg["--db=sqlite_database"]
+        if option:
+            self.amity.save_system_state(option)
+        else:
+            self.amity.save_system_state()
+
+
+
+    @docopt_cmd
+    def do_load_state(self, arg):
+        """Usage: load_state <sqlite_database>"""
+        database = arg["<sqlite_database>"]
+        self.amity.load_system_state(database)
 
 
     def do_quit(self, arg):

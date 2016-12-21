@@ -11,9 +11,11 @@ class Office(Room):
         super(Office, self).__init__(name)
         self.capacity = 6
         self.access_allowed = ["fellow", "staff"]
+        self.type = "office"
 
 class LivingSpace(Room):
     def __init__(self, name):
         super(LivingSpace, self).__init__(name)
         self.capacity = 4
         self.access_allowed = ["fellow"]
+        self.type = "living"

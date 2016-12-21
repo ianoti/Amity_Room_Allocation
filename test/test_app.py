@@ -115,4 +115,8 @@ class TestRoomAllocate(unittest.TestCase):
 
     def test_display_unallocated(self):
         self.amity.print_unallocated()
-        self.assertEqual
+        pass
+
+    def test_display_allocated(self):
+        self.amity.print_allocated()
+        pass
