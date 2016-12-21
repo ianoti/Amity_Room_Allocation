@@ -93,3 +93,5 @@ ENV/
 # Test data to be ignored
 miscellaneous_test.py
 /data/example.txt
+/data/allocated_people.txt
+/data/unallocated_people.txt
