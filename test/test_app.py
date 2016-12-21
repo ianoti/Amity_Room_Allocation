@@ -109,6 +109,10 @@ class TestRoomAllocate(unittest.TestCase):
 
     def test_simple_allocation(self):
         self.amity.allocate()
-        self.assertEqual(len(self.waiting_list),0)
-        self.assertEqual(len(self.room_directory[0].occupants), 2)
-        self.assertEqual(len(self.room_directory[1].occupants), 1)
+        self.assertEqual(len(self.amity.waiting_list),0)
+        self.assertEqual(len(self.amity.room_directory[0].occupants), 2)
+        self.assertEqual(len(self.amity.room_directory[1].occupants), 1)
+
+    def test_display_unallocated(self):
+        self.amity.print_unallocated()
+        self.assertEqual
