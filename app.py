@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-import os
-import random
-import pickle
-import sqlite3
 """
     This module implements Amity as a class based interface for the entire
     room allocation system
 """
+import os
+import random
+import pickle
+import sqlite3
 
 from models.person import Fellow, Staff
 from models.room import Office, LivingSpace
@@ -27,46 +27,54 @@ class Amity(object):
                 person.p_id = int(len(self.people_directory)+1)
             elif role.lower() == "staff":
                 if wants_living == "Y":
-                    return "Staff aren't eligible for accomodation"
+                    print ("Staff aren't eligible for accomodation")
                 else:
                     person = Staff(fname, sname)
                     person.p_id = int(len(self.people_directory)+1)
             else:
-                return "the role is invalid"
+                print ("the role is invalid")
             self.waiting_list.append(person)
             self.people_directory.append(person)
         elif not isinstance(fname, str) or not isinstance(sname, str):
-            return "the name is invalid"
+            print ("the name is invalid")
 
     def add_room(self, rm_type, given_names):
         """ method to add rooms to system utilising models specified """
-        for rm_name in given_names:
-            if isinstance(rm_type, str) and isinstance(rm_name, str):
-                rm_variable =  rm_name.lower()
-                if rm_variable not in [room.name for room in self.room_directory]:
-                    if rm_type == "l":
-                        room = LivingSpace(rm_variable)
-                    elif rm_type == "o" or "office":
-                        room = Office(rm_variable)
-                    else:
-                        print ("the option given to create room is invalid")
+        print("add room is running")
+        if type(rm_type) is not str:
+            print("the room type option is invalid")
+        for room_names in given_names:
+            rm_variable =  room_names.lower()
+            if rm_variable in [room.name for room in self.room_directory]:
+                print("the room already exists")
+                return
+            else:
+                if rm_type == "l":
+                    room = LivingSpace(rm_variable)
                     self.room_directory.append(room)
+                    print("successfully added living space")
+                elif rm_type == "o":
+                    room = Office(rm_variable)
+                    self.room_directory.append(room)
+                    print("successfully added office")
                 else:
-                    return "the room already exists"
-            elif not isinstance(rm_type, str):
-                return "the room option is invalid"
-            elif not isinstance(rm_name, str):
-                return "the room name is invalid"
+                    print("the option given to create room is invalid",
+                            "use: o or l")
 
     def get_available_space(self, room_type):
-        """ filter the room directory to return available rooms for occupancy """
+        """
+        filter the room directory to return
+        available rooms for occupancy
+        """
         if room_type == "o":
             office_w_space = [room for room in self.room_directory
-                if (len(room.occupants)< room.capacity) and isinstance(room, Office)]
+                if (len(room.occupants)< room.capacity)
+                and isinstance(room, Office)]
             return office_w_space
         elif room_type == "l":
             living_w_space = [room for room in self.room_directory
-                if (len(room.occupants)< room.capacity) and isinstance(room, LivingSpace)]
+                if (len(room.occupants)< room.capacity)
+                and isinstance(room, LivingSpace)]
             return living_w_space
 
     def get_rooms_w_people(self):
@@ -78,12 +86,14 @@ class Amity(object):
     def get_person_id(self, fsname, ssname):
         """ search the person id given names """
         search = [person for person in self.people_directory
-            if person.fname.lower()==fsname.lower() and person.sname.lower()==ssname.lower()]
+            if person.fname.lower()==fsname.lower()
+            and person.sname.lower()==ssname.lower()]
         if len(search) == 0:
             print("no records found")
         if len(search) >= 1:
             for person in search:
-                print("{} {} has id {}".format(person.fname,person.sname,person.p_id))
+                print("{} {} has id {}"\
+                    .format(person.fname,person.sname,person.p_id))
 
     def allocate(self):
         """ assign people to rooms """
@@ -93,16 +103,18 @@ class Amity(object):
             available_office = self.get_available_space("o")
             available_living = self.get_available_space("l")
             if len(available_office)==0 and len(available_living)==0:
-                return "Couldn't allocate, no rooms available"
+                print("Couldn't allocate, no rooms available")
+                return
 
             if (person.role == "staff" or
-                (person.role == "fellow" and person.wants_living.lower() == "n")):
+                   (person.role == "fellow"
+                    and person.wants_living.lower() == "n")):
                 if len(available_office)>= 1:
                     allocated_office = random.choice(available_office)
                     allocated_office.occupants.append(person)
                     self.waiting_list.remove(person)
                 else:
-                    return "The offices are filled"
+                    print ("The offices are filled")
 
             if (person.role == "fellow" and person.wants_living.lower() == "y"):
                 if len(available_office)>= 1 and len(available_living)>=1:
@@ -116,36 +128,46 @@ class Amity(object):
                     allocated_office.occupants.append(person)
                     self.waiting_list.remove(person)
                     self.living_waiting_list.append(person)
-                    return "Can't allocate Living Space person moved to waiting_list"
+                    print ("Can't allocate Living Space person"\
+                           "moved to waiting_list")
 
     def reallocate(self, person_id, room_name):
         """ method to allow for reallocation of users between rooms """
         occupied_room = self.get_rooms_w_people()
-        print(len(occupied_room))
         #person_id is used to retrieve person object used in comprehension
-        person_retr = [person for person in self.people_directory if person.p_id == person_id]
-        if len(person_retr):
+        print(len(self.people_directory))
+        person_retr = [person for person in self.people_directory
+                       if person.p_id == person_id]
+        if len(person_retr)>=1:
             move_person = person_retr[0]
             #check if the person is in a room to remove from
-            old_room = [room for room in occupied_room if move_person in room.occupants]
-            if len(old_room):
+            old_room = [room for room in occupied_room
+                        if move_person in room.occupants]
+            if len(old_room)>=1:
                 #use comprehension to return destination room if it exists
-                new_room = [room for room in self.room_directory if room.name.lower()==room_name.lower()]
+                new_room = [room for room in self.room_directory
+                            if room.name.lower()==room_name.lower()]
                 if len(new_room):
-                    if (old_room[0].type == new_room[0].type):
-                        old_room[0].occupants.remove(move_person)
+                    original_room = [roomold for roomold in old_room
+                                     if roomold.type==new_room[0].type]
+                    if len(original_room):
+                        original_room[0].occupants.remove(move_person)
                         new_room[0].occupants.append(move_person)
                     else:
-                        return "reallocation only allowed between rooms of same type"
+                        print("the room types for allocation must be equal")
                 else:
-                    return "The room doesn't exist confirm name of room"
+                    print("The room doesn't exist confirm name of room")
             else:
-                return "the person isn't in a room. wait for automatic assignement"
+                print("the person isn't in a room."\
+                      "wait for automatic assignement")
         else:
-            return "The user couldn't be found"
+            print("The user couldn't be found")
 
     def print_unallocated(self, option = None):
-        """display a list of unallocated people on screen optional writing to file"""
+        """
+        display a list of unallocated people on
+        screen optional writing to file
+        """
         print("unallocated print is running")
         if option is None:
             if len(self.waiting_list)>=1:
@@ -154,29 +176,37 @@ class Amity(object):
                 for person in self.waiting_list:
                     if isinstance(person, Fellow):
                         print("Name: {} {} Role: {} Wants accomodation:{}"
-                            .format(person.fname, person.sname, person.role, person.wants_living))
+                              .format(person.fname, person.sname, person.role,
+                              person.wants_living))
                     elif isinstance(person, Staff):
-                        print("Name: {} {} Role: {}".format(person.fname,person.sname, person.role))
+                        print("Name: {} {} Role: {}"
+                              .format(person.fname,person.sname, person.role))
             elif len(self.waiting_list)==0:
                 print("there are no unallocated people")
 
         else:
-            file = open("./data/unallocated_people.txt", "w")
+            file_txt = open("./data/" +option+ ".txt", "w")
             if len(self.waiting_list)>=1:
-                file.write("People who have yet to be allocated\n")
-                file.write("#"*50+"\n")
+                file_txt.write("People who have yet to be allocated\n")
+                file_txt.write("#"*50+"\n")
                 for person in self.waiting_list:
                     if isinstance(person, Fellow):
-                        file.write("Name: {} {} Role: {} Wants accomodation:{}\n"
-                            .format(person.fname, person.sname, person.role, person.wants_living))
+                        file_txt.write("Name: {} {} Role: {} Accomodation:{}\n"
+                                       .format(person.fname, person.sname,
+                                       person.role, person.wants_living))
                     elif isinstance(person, Staff):
-                        file.write("Name: {} {} Role: {}\n".format(person.fname,person.sname, person.role))
+                        file_txt.write("Name: {} {} Role: {}\n"
+                                       .format(person.fname,person.sname,
+                                       person.role))
             else:
-                file.write("There are no unallocated people")
-            file.close()
+                file_txt.write("There are no unallocated people")
+            file_txt.close()
 
     def print_allocations(self, option = None):
-        """ print out people currently allocated to a room and the room name """
+        """
+        print out people currently allocated
+        to a room and the room name
+        """
         rooms_w_guys = self.get_rooms_w_people()
         if option is None:
             if len(rooms_w_guys) == 0:
@@ -184,27 +214,33 @@ class Amity(object):
             elif len(rooms_w_guys) >= 1:
                 print("People allocated to room and room name")
                 for room in rooms_w_guys:
-                    print("Room Name:{} Room Type:{}".format(room.name,room.type))
+                    print("Room Name:{} Room Type:{}"
+                          .format(room.name,room.type))
                     print("-"*50)
                     member_string = ""
                     for person in room.occupants:
-                        member_string += ("{} {} {} ,".format(person.fname, person.sname, person.role))
+                        member_string += ("{} {} {} ,"
+                                          .format(person.fname, person.sname,
+                                          person.role))
                     print (member_string)
 
         else:
-            file = open("./data/allocated_people.txt", "w")
+            file_txt = open("./data/" +option+ ".txt", "w")
             if len(rooms_w_guys) >=1:
-                file.write("People allocated to room and room name\n")
+                file_txt.write("People allocated to room and room name\n")
                 for room in rooms_w_guys:
-                    file.write("Room Name:{} Room Type:{}\n".format(room.name,room.type))
-                    file.write("-"*50+"\n")
+                    file_txt.write("Room Name:{} Room Type:{}\n"
+                                   .format(room.name,room.type))
+                    file_txt.write("-"*50+"\n")
                     member_string = ""
                     for person in room.occupants:
-                        member_string += ("{} {} {} ,".format(person.fname, person.sname, person.role))
-                    file.write(member_string+"\n")
+                        member_string += ("{} {} {} ,"
+                                          .format(person.fname, person.sname,
+                                          person.role))
+                    file_txt.write(member_string+"\n")
             else:
-                file.write("No people have been allocated yet")
-            file.close()
+                file_txt.write("No people have been allocated yet")
+            file_txt.close()
 
     def batch_add_person(self, file_path):
         """  method to load names from txt file and add people to system """
@@ -212,21 +248,25 @@ class Amity(object):
             for person_string in people_file:
                 person_details = person_string.rstrip().split()
                 if len(person_details) == 4:
-                    self.add_person(person_details[0], person_details[1], person_details[2], person_details[3])
+                    self.add_person(person_details[0], person_details[1],
+                                    person_details[2], person_details[3])
                 elif len(person_details) == 3:
-                    self.add_person(person_details[0], person_details[1], person_details[2])
+                    self.add_person(person_details[0], person_details[1],
+                                    person_details[2])
                 else:
-                    return "the text file has formatting errors"
+                     print("the text file has formatting errors")
 
     def print_room(self, rm_name):
         """ print the occupants in a room given the room name """
-        room_exists = [room for room in self.room_directory if room.name.lower() == rm_name.lower()]
+        room_exists = [room for room in self.room_directory
+                       if room.name.lower() == rm_name.lower()]
         if len(room_exists):
             for room in room_exists:
                 members=""
                 if len(room.occupants)>=1:
                     for person in room.occupants:
-                        members += (" {} {},".format(person.fname, person.sname))
+                        members += (" {} {},"
+                                    .format(person.fname, person.sname))
                     print (members)
                 else:
                     print("The room is empty")
@@ -242,14 +282,16 @@ class Amity(object):
 			PEOPLE_DIRECTORY text, LIVING_WAITING text);''')
         conn.close()
 
-        """ convert list variables to string representation"""
+        """ convert list variables to string representation for storage"""
         rooms_str = pickle.dumps(self.room_directory)
         waitlist_str = pickle.dumps(self.waiting_list)
         people_str = pickle.dumps(self.people_directory)
         livelist_str = pickle.dumps(self.living_waiting_list)
         conn = sqlite3.connect(database_name)
-        conn.execute("INSERT OR REPLACE INTO Amity(Id, ROOM_DIRECTORY, WAITING_LIST, PEOPLE_DIRECTORY, LIVING_WAITING) VALUES(?, ?, ?, ?,?);",
-        (1, rooms_str, waitlist_str, people_str, livelist_str))
+        conn.execute("INSERT OR REPLACE INTO Amity(Id, ROOM_DIRECTORY,"\
+                     "WAITING_LIST, PEOPLE_DIRECTORY, LIVING_WAITING) "\
+                     "VALUES(?, ?, ?, ?, ?);",
+                     (1, rooms_str, waitlist_str, people_str, livelist_str))
         conn.commit()
         conn.close()
 
@@ -272,10 +314,10 @@ class Amity(object):
 
         conn.close()
         #The retrieved database values are restored to the application
-        room_list = pickle.loads(room_dmp[0].encode())
-        wait_list = pickle.loads(wait_dmp[0].encode())
-        people_list = pickle.loads(people_dmp[0].encode())
-        lwait_list = pickle.loads(lwait_dmp[0].encode())
+        room_list = pickle.loads(room_dmp[0])
+        wait_list = pickle.loads(wait_dmp[0])
+        people_list = pickle.loads(people_dmp[0])
+        lwait_list = pickle.loads(lwait_dmp[0])
 
         #the values are loaded back to the Amity session
         self.waiting_list = wait_list
