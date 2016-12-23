@@ -5,8 +5,8 @@ Usage:
     Amity create_room <room_type> <room_name>...
     Amity add_person <first_name> <second_name> <role> [<wants_accommodation>]
     Amity print_room <room_name>
-    Amity print_unallocated [-o=filename]
-    Amity print_allocations [-o=filename]
+    Amity print_unallocated [--o=filename]
+    Amity print_allocations [--o=filename]
     Amity load_people <file_path>
     Amity get_id <first_name> <second_name>
     Amity reallocate_person <person_identifier> <new_room_name>
@@ -93,12 +93,11 @@ class AmityInterface (cmd.Cmd):
         sname = arg["<second_name>"]
         role = arg["<role>"]
         wants_acc = arg["<wants_accommodation>"]
-        self.amity.allocate()
         if wants_acc:
             print(self.amity.add_person(fname, sname, role, wants_acc))
         else:
             print(self.amity.add_person(fname, sname, role))
-
+        print(self.amity.allocate())
 
     @docopt_cmd
     def do_print_unallocated(self, arg):

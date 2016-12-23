@@ -6,6 +6,7 @@
 import random
 import pickle
 import sqlite3
+import os
 
 from models.person import Fellow, Staff
 from models.room import Office, LivingSpace
@@ -17,7 +18,6 @@ class Amity(object):
         self.room_directory = []
         self.waiting_list = []
         self.people_directory = []
-        self.living_waiting_list = []
 
     def add_person(self, fname, sname, role="none", wants_living="N"):
         """ method to add people to system utilising models"""
@@ -27,21 +27,21 @@ class Amity(object):
                 person.p_id = int(len(self.people_directory)+1)
                 self.waiting_list.append(person)
                 self.people_directory.append(person)
-                return("fellow added")
+                print("fellow added")
             elif role.lower() == "staff":
                 if wants_living == "Y":
-                    return "Staff aren't eligible for accomodation"
+                    return ("Staff aren't eligible for accomodation")
                 else:
                     person = Staff(fname, sname)
                     person.p_id = int(len(self.people_directory)+1)
                     self.waiting_list.append(person)
                     self.people_directory.append(person)
-                    return("staff added")
+                    print("staff added")
             else:
-                return "the role is invalid:must be staff or fellow"
+                return ("the role is invalid:must be staff or fellow")
 
         else:
-            return "the name is invalid"
+            return ("the name is invalid")
 
     def add_room(self, rm_type, given_names):
         """ method to add rooms to system utilising models specified """
@@ -58,14 +58,13 @@ class Amity(object):
                     if rm_type == "l":
                         room = LivingSpace(rm_variable)
                         self.room_directory.append(room)
-                        print("successfully added living space")
                     elif rm_type == "o":
                         room = Office(rm_variable)
                         self.room_directory.append(room)
-                        print("successfully added office")
                     else:
-                        print("the option given to create room is invalid",
-                              "use: o or l")
+                        return("the option given to create room is invalid",
+                               "use: o or l")
+        return("successfully added rooms to Amity")
 
     def get_available_space(self, room_type):
         """
@@ -129,25 +128,39 @@ class Amity(object):
                     allocated_living.occupants.append(person)
                     self.waiting_list.remove(person)
                 elif len(available_office) >= 1 and len(available_living) == 0:
-                    allocated_office = random.choice(available_office)
-                    allocated_office.occupants.append(person)
-                    self.waiting_list.remove(person)
-                    self.living_waiting_list.append(person)
-                    return ("Can't allocate Living Space person moved"
-                            "to waiting list")
+                    # if fellow needs both office and living, leave in
+                    # waiting list if living unavailable will be allocated
+                    # after a new person is added and living is available
+                    print("please add living space to allocate those needing",
+                          "living space")
+                    # allocated_office = random.choice(available_office)
+                    # allocated_office.occupants.append(person)
+                    # self.waiting_list.remove(person)
+                    # self.living_waiting_list.append(person)
+                    # return ("Can't allocate Living Space person moved"
+                    #         "to waiting list")
+
+    def room_cleanup(self, room, person_id):
+        """
+        utility function to remove the person with given id from the target
+        room
+        """
+        for person in room.occupants:
+            if person.p_id == person_id:
+                room.occupants.remove(person)
 
     def reallocate(self, person_id, room_name):
         """ method to allow for reallocation of users between rooms """
         occupied_room = self.get_rooms_w_people()
         # person_id is used to retrieve person object used in comprehension
-        print(len(self.people_directory))
         person_retr = [person for person in self.people_directory
                        if person.p_id == person_id]
         if len(person_retr) >= 1:
             move_person = person_retr[0]
             # check if the person is in a room to remove from
             old_room = [room for room in occupied_room
-                        if move_person in room.occupants]
+                        for person in room.occupants
+                        if person.p_id == person_id]
             if len(old_room) >= 1:
                 # use comprehension to return destination room if it exists
                 new_room = [room for room in self.room_directory
@@ -156,8 +169,11 @@ class Amity(object):
                     original_room = [roomold for roomold in old_room
                                      if roomold.type == new_room[0].type]
                     if len(original_room):
-                        original_room[0].occupants.remove(move_person)
-                        new_room[0].occupants.append(move_person)
+                        if len(new_room[0].occupants) == new_room[0].capacity:
+                            return("The destination room is full")
+                        else:
+                            new_room[0].occupants.append(move_person)
+                            self.room_cleanup(original_room[0], person_id)
                     else:
                         print("the room types for allocation must be equal")
                 else:
@@ -273,19 +289,18 @@ class Amity(object):
         conn = sqlite3.connect(database_name)
         conn.execute('''CREATE TABLE IF NOT EXISTS Amity
         (Id INTEGER PRIMARY KEY,ROOM_DIRECTORY text, WAITING_LIST text,
-        PEOPLE_DIRECTORY text, LIVING_WAITING text);''')
+        PEOPLE_DIRECTORY text);''')
         conn.close()
 
         # convert list variables to string representation for storage
         rooms_str = pickle.dumps(self.room_directory)
         waitlist_str = pickle.dumps(self.waiting_list)
         people_str = pickle.dumps(self.people_directory)
-        livelist_str = pickle.dumps(self.living_waiting_list)
         conn = sqlite3.connect(database_name)
         conn.execute("INSERT OR REPLACE INTO Amity(Id, ROOM_DIRECTORY,"
-                     "WAITING_LIST, PEOPLE_DIRECTORY, LIVING_WAITING) "
-                     "VALUES(?, ?, ?, ?, ?);",
-                     (1, rooms_str, waitlist_str, people_str, livelist_str))
+                     "WAITING_LIST, PEOPLE_DIRECTORY) "
+                     "VALUES(?, ?, ?, ?);",
+                     (1, rooms_str, waitlist_str, people_str))
         conn.commit()
         conn.close()
         status_msg = ("The data has been stored in the database: "
@@ -307,26 +322,22 @@ class Amity(object):
             cursor.execute("SELECT PEOPLE_DIRECTORY FROM Amity WHERE Id=1")
             people_dmp = cursor.fetchone()
 
-            cursor.execute("SELECT LIVING_WAITING FROM Amity WHERE Id=1")
-            lwait_dmp = cursor.fetchone()
-
             conn.close()
 
             # The retrieved database values are restored to the application
             room_list = pickle.loads(room_dmp[0])
             wait_list = pickle.loads(wait_dmp[0])
             people_list = pickle.loads(people_dmp[0])
-            lwait_list = pickle.loads(lwait_dmp[0])
 
             # the values are loaded back to the Amity session
             self.waiting_list = wait_list
             self.room_directory = room_list
             self.people_directory = people_list
-            self.living_waiting_list = lwait_list
             status_msg = ("The system state has been restored from: "
                           + database_name)
             return (status_msg)
         except:
             error_msg = ("there was a problem with database: " + database_name
                          + " please confirm the database name is correct")
+            os.remove(database_name)
             return(error_msg)
