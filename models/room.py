@@ -6,12 +6,14 @@ class Room(object):
         self.access_allowed = access_allowed
         self.occupants = []
 
+
 class Office(Room):
     def __init__(self, name):
         super(Office, self).__init__(name)
         self.capacity = 6
         self.access_allowed = ["fellow", "staff"]
         self.type = "office"
+
 
 class LivingSpace(Room):
     def __init__(self, name):
