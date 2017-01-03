@@ -21,10 +21,7 @@ coverage.xml
 venv/
 ENV/
 
-# Test data to be ignored
+# Test data to be ignored and databases
 *.db
-miscellaneous_test.py
-/data/example.txt
-/data/allocated_people.txt
-/data/unallocated_people.txt
 /data/*.txt
+*.txt
