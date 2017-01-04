@@ -141,8 +141,6 @@ class TestRoomAllocate(unittest.TestCase):
         self.amity.add_person("Tom", "Brady", "Fellow", "Y")
         self.amity.add_person("Joan", "juja", "staff")
         self.amity.add_person("Koech", "Tom", "staff")
-        self.assertEqual(len(self.amity.waiting_list), 7)
-        self.amity.allocate()
         self.assertEqual(len(self.amity.waiting_list), 1)
         self.assertEqual(len(self.amity.room_directory[0].occupants), 6)
         self.assertEqual(len(self.amity.room_directory[1].occupants), 3)
@@ -167,9 +165,9 @@ class TestRetrieveDetails(unittest.TestCase):
 
     def test_get_the_id(self):
         self.assertEqual(self.amity.get_person_id("Adrian", "Andre"),
-                         "Adrian Andre has id 1")
+                         "Adrian Andre fellow has id 1\n")
         self.assertEqual(self.amity.get_person_id("Tom", "Omondi"),
-                         "Tom Omondi has id 2")
+                         "Tom Omondi staff has id 2\n")
 
 
 class TestRoomPrint(unittest.TestCase):
