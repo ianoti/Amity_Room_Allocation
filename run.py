@@ -94,17 +94,16 @@ class AmityInterface (cmd.Cmd):
         role = arg["<role>"]
         wants_acc = arg["<wants_accommodation>"]
         if wants_acc:
-            print(self.amity.add_person(fname, sname, role, wants_acc))
+            self.amity.add_person(fname, sname, role, wants_acc)
         else:
-            print(self.amity.add_person(fname, sname, role))
-        print(self.amity.allocate())
+            self.amity.add_person(fname, sname, role)
 
     @docopt_cmd
     def do_print_unallocated(self, arg):
         """Usage: print_unallocated [--o=filename]"""
         option = arg["--o"]
         if option:
-            self.amity.print_unallocated(option)
+            print(self.amity.print_unallocated(option))
         else:
             print(self.amity.print_unallocated())
 
@@ -119,7 +118,7 @@ class AmityInterface (cmd.Cmd):
         """Usage: print_allocated [--o=filename]"""
         option = arg["--o"]
         if option:
-            self.amity.print_allocations(option)
+            print(self.amity.print_allocations(option))
         else:
             print(self.amity.print_allocations())
 
@@ -128,7 +127,7 @@ class AmityInterface (cmd.Cmd):
         """Usage: reallocate_person <person_identifier> <new_room_name>"""
         person_id = arg["<person_identifier>"]
         new_room = arg["<new_room_name>"]
-        self.amity.reallocate(int(person_id), new_room)
+        print(self.amity.reallocate(int(person_id), new_room))
 
     @docopt_cmd
     def do_get_id(self, arg):

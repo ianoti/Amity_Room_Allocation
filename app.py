@@ -27,7 +27,6 @@ class Amity(object):
                 person.p_id = int(len(self.people_directory)+1)
                 self.waiting_list.append(person)
                 self.people_directory.append(person)
-                print("fellow added")
             elif role.lower() == "staff":
                 if wants_living == "Y":
                     return ("Staff aren't eligible for accomodation")
@@ -36,10 +35,9 @@ class Amity(object):
                     person.p_id = int(len(self.people_directory)+1)
                     self.waiting_list.append(person)
                     self.people_directory.append(person)
-                    print("staff added")
             else:
                 return ("the role is invalid:must be staff or fellow")
-
+            self.allocate()
         else:
             return ("the name is invalid")
 
@@ -96,9 +94,13 @@ class Amity(object):
         if len(search) == 0:
             return "no records found"
         if len(search) >= 1:
+            search_rslt = ""
             for person in search:
-                return("{} {} has id {}".format(person.fname, person.sname,
-                                                person.p_id))
+                search_rslt += ("{} {} {} has id {}\n".format(person.fname,
+                                                              person.sname,
+                                                              person.role,
+                                                              person.p_id))
+            return(search_rslt)
 
     def allocate(self):
         """ assign people to rooms """
@@ -130,15 +132,9 @@ class Amity(object):
                 elif len(available_office) >= 1 and len(available_living) == 0:
                     # if fellow needs both office and living, leave in
                     # waiting list if living unavailable will be allocated
-                    # after a new person is added and living is available
+                    # after living space and office are both available
                     print("please add living space to allocate those needing",
                           "living space")
-                    # allocated_office = random.choice(available_office)
-                    # allocated_office.occupants.append(person)
-                    # self.waiting_list.remove(person)
-                    # self.living_waiting_list.append(person)
-                    # return ("Can't allocate Living Space person moved"
-                    #         "to waiting list")
 
     def room_cleanup(self, room, person_id):
         """
@@ -174,15 +170,16 @@ class Amity(object):
                         else:
                             new_room[0].occupants.append(move_person)
                             self.room_cleanup(original_room[0], person_id)
+                            return("reallocation successful")
                     else:
-                        print("the room types for allocation must be equal")
+                        return("the room types for allocation must be equal")
                 else:
-                    print("The room doesn't exist confirm name of room")
+                    return("The room doesn't exist confirm name of room")
             else:
-                print("the person isn't in a room."
-                      "wait for automatic assignement")
+                return("the person isn't in a room."
+                       "wait for automatic assignement")
         else:
-            print("The user couldn't be found")
+            return("The user couldn't be found")
 
     def print_unallocated(self, option=None):
         """
@@ -208,6 +205,7 @@ class Amity(object):
             if option is None:
                 return(print_str)
             else:
+                print("output to file")
                 file_txt = open("./data/" + option + ".txt", "w")
                 file_txt.write(print_str)
                 file_txt.close()
