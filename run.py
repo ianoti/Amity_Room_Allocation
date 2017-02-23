@@ -68,7 +68,6 @@ def intro():
 class AmityInterface (cmd.Cmd):
     intro()
     prompt = 'Amity ->>'
-    file = None
 
     amity = Amity()
 
